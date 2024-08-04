@@ -26,7 +26,7 @@ share/python-wheels/
 *.egg
 MANIFEST
 *.zip
-coco2017/
+GRAY_SCL_TO_RGB/coco2017/
 
 
 # PyInstaller

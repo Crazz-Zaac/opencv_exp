@@ -1,0 +1,1 @@
+# script for testing the model on a single new image
