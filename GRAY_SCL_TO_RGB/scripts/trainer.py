@@ -14,18 +14,7 @@ class TrainerConfig(BaseModel):
     log_every: int
     chkpt_every: int
     best_model_name: str
-    num_epochs: int
     device: str = "cpu"
-    log_steps: int = 100
-    save_steps: int = 1000
-    model_dir: Path = Path("models")
-    model_name: str = "model"
-    model_extension: str = "pt"
-    log_dir: Path = Path("logs")
-    log_name: str = "log"
-    log_extension: str = "csv"
-    seed: int = 42
-    verbose: bool = True
 
     class Config:
         arbitrary_types_allowed = True
