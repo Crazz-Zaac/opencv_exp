@@ -18,7 +18,7 @@ This project aims to convert grayscale images to RGB using a deep learning model
 1. Clone the repository
 2. Install the required packages:
     ```sh
-    pip install -r requirements.txt
+    pip install -r GRAY_SCL_TO_RGB/requirements.txt
     ```
 
 ### Usage
