@@ -32,6 +32,7 @@ class DataConfig(BaseModel):
     shuffle: bool = True
     image_channels: ImageChannel = ImageChannel.RGB
     image_extensions: List[str] = ["jpg", "jpeg", "png"]
+    max_data = -1 # -1 means all data
 
     class Config:
         arbitrary_types_allowed = True
