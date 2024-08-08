@@ -27,6 +27,7 @@ share/python-wheels/
 MANIFEST
 *.zip
 GRAY_SCL_TO_RGB/coco2017/
+results/
 
 
 # PyInstaller
