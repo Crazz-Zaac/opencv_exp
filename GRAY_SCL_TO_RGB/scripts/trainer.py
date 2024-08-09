@@ -20,7 +20,7 @@ class TrainerConfig(BaseModel):
     log_every: int = 1
     chkpt_every: int = 0
     best_model_name: str = "best_model.pth"
-    device: str = "cpu"
+    device: str = "cuda" 
     epochs: int = 100
 
     class Config:
@@ -65,7 +65,7 @@ class Trainer:
 
     def train(self, train_loader, val_loader):
         self.logs = {}
-
+        self.model = self.model.to(self.config.device)
         for epoch in range(self.config.epochs):
             self.model.train()
             logs = []
@@ -80,6 +80,7 @@ class Trainer:
             self.log(f"Epoch {epoch}: {logs}")
             self.logs[epoch] = logs
 
+
     def train_step(self, epoch, train_loader):
         total_loss = 0
         p_bar = tqdm(train_loader, desc=f"Epoch {epoch}")
@@ -93,6 +94,7 @@ class Trainer:
             loss.backward()
             self.optimizer.step()
             total_loss += loss.item()
+            p_bar.update(1)
             p_bar.set_postfix({"loss": total_loss / (i + 1)})
         p_bar.close()
         return {"train_loss": total_loss / len(train_loader)}
@@ -107,6 +109,7 @@ class Trainer:
             outputs = self.model(inputs)
             loss = self.criterion(outputs, targets)
             total_loss += loss.item()
+            p_bar.update(1)
             p_bar.set_postfix({"val_loss": total_loss / (i + 1)})
             for j, (inp, output, target) in enumerate(zip(inputs, outputs, targets)):
                 inp = inp.cpu().permute(1, 2, 0).numpy()
@@ -115,7 +118,7 @@ class Trainer:
                 inp = self.denormalization(inp).astype(np.uint8)
                 output = self.denormalization(output).astype(np.uint8)
                 target = self.denormalization(target).astype(np.uint8)
-                print(inp.shape, output.shape, target.shape)
+                # print(inp.shape, output.shape, target.shape)
                 stacked = np.hstack(
                     [
                         cv2.cvtColor(inp.reshape(inp.shape[:2]), cv2.COLOR_GRAY2RGB),
@@ -173,7 +176,7 @@ if __name__ == "__main__":
         train_size=0.8,
         shuffle=True,
         seed=42,
-        max_data=10,
+        max_data=5000,
     )
     train_dataset = ImageDataset(
         data_config,
@@ -190,10 +193,10 @@ if __name__ == "__main__":
     )
 
     train_loader = torch.utils.data.DataLoader(
-        train_dataset, batch_size=2, shuffle=True, num_workers=4
+        train_dataset, batch_size=32, shuffle=True, num_workers=4
     )
     val_loader = torch.utils.data.DataLoader(
-        val_dataset, batch_size=2, shuffle=False, num_workers=4
+        val_dataset, batch_size=32, shuffle=True, num_workers=4
     )
 
     config = TrainerConfig(
